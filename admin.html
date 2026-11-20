@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Админка — Radjabov Mobile</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0a0e18">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body class="adm">
+<div class="sky" aria-hidden="true"></div>
+
+<header class="top">
+  <div class="wrap top__in">
+    <a href="index.html" class="brand"><span class="brand__mark" id="logoMark"></span><span class="brand__name">RADJABOV<br>MOBILE</span></a>
+    <span class="adm__tag">Админка</span>
+    <div class="adm__right" id="headRight" hidden>
+      <a href="index.html" target="_blank" class="btn btn--glass btn--sm">Открыть сайт ↗</a>
+      <button class="btn btn--glass btn--sm" id="logout">Выйти</button>
+    </div>
+  </div>
+</header>
+
+<!-- Вход -->
+<section class="login" id="loginView">
+  <form class="login__box" id="loginForm">
+    <h1>ВХОД ДЛЯ СОТРУДНИКОВ</h1>
+    <p>Здесь вы добавляете устройства, фото, видео и акции на сайт.</p>
+    <label class="lbl">Пароль<input type="password" id="pw" autocomplete="current-password" required></label>
+    <p class="err" id="loginErr" hidden></p>
+    <button class="btn btn--light" type="submit" id="loginBtn">Войти</button>
+  </form>
+</section>
+
+<!-- Рабочая область -->
+<main class="wrap app" id="appView" hidden>
+  <nav class="tabs" id="tabs">
+    <button data-tab="items" class="is-on">Устройства <span id="nItems"></span></button>
+    <button data-tab="promos">Акции <span id="nPromos"></span></button>
+    <button data-tab="settings">Контакты</button>
+  </nav>
+
+  <!-- Устройства -->
+  <section id="tab-items">
+    <div class="bar">
+      <label class="field field--search"><svg viewBox="0 0 24 24"><path d="M10.5 3a7.5 7.5 0 0 1 5.9 12.1l4.3 4.3-1.4 1.4-4.3-4.3A7.5 7.5 0 1 1 10.5 3zm0 2a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11z" fill="currentColor"/></svg><input id="q" type="search" placeholder="Найти устройство"></label>
+      <label class="field"><select id="fSel">
+        <option value="">Все</option><option value="new">Новые</option><option value="used">Б/У</option>
+        <option value="available">В наличии</option><option value="reserved">Забронированы</option><option value="sold">Проданы</option><option value="hidden">Скрыты</option>
+      </select></label>
+      <button class="btn btn--light" id="addItem">＋ Добавить устройство</button>
+    </div>
+    <div class="list" id="list"></div>
+  </section>
+
+  <!-- Акции -->
+  <section id="tab-promos" hidden>
+    <div class="bar"><p class="muted">Баннеры в разделе «Акции» на сайте. Скидка на конкретное устройство ставится в его карточке — полем «Старая цена».</p><button class="btn btn--light" id="addPromo">＋ Добавить акцию</button></div>
+    <div class="promo-list" id="promoList"></div>
+  </section>
+
+  <!-- Контакты -->
+  <section id="tab-settings" hidden>
+    <form class="panel set" id="setForm">
+      <label class="lbl">Город<input name="city"></label>
+      <label class="lbl">Адрес<input name="address"></label>
+      <label class="lbl">Часы работы<input name="hours"></label>
+      <label class="lbl">Телефон<input name="phone"></label>
+      <label class="lbl">WhatsApp (только цифры)<input name="whatsapp" inputmode="numeric"></label>
+      <label class="lbl">Telegram-канал (без @)<input name="telegram"></label>
+      <label class="lbl">Instagram (без @)<input name="instagram"></label>
+      <label class="lbl">Ссылка на 2ГИС<input name="map"></label>
+      <button class="btn btn--light" type="submit">Сохранить контакты</button>
+    </form>
+  </section>
+</main>
+
+<!-- Редактор устройства -->
+<div class="sheet" id="sheet" hidden>
+  <div class="sheet__bg" data-x></div>
+  <form class="sheet__box" id="itemForm" novalidate>
+    <header class="sheet__head">
+      <h2 id="sheetTitle">Новое устройство</h2>
+      <button type="button" class="modal__x" data-x aria-label="Закрыть">×</button>
+    </header>
+    <div class="sheet__body">
+      <div class="form">
+
+        <fieldset>
+          <legend>Что продаём</legend>
+          <div class="seg seg--sm" id="condSeg">
+            <button type="button" data-v="used">Б/У</button>
+            <button type="button" data-v="new">Новый</button>
+          </div>
+          <label class="lbl">Категория<select name="cat" id="catSel"></select></label>
+          <label class="lbl">Модель<span id="modelWrap"></span></label>
+          <div class="lbl">Память<div class="pills" id="memPills"></div></div>
+          <label class="lbl">Цвет
+            <span class="color-in"><span class="dot" id="colorDot"></span><input name="color" list="colorList" placeholder="Например, Deep Purple"></span>
+            <datalist id="colorList"></datalist>
+          </label>
+          <div class="lbl" id="simRow">SIM<div class="pills" id="simPills"></div></div>
+          <label class="lbl" id="batRow">Состояние аккумулятора, %
+            <span class="range"><input type="range" min="50" max="100" name="battery"><b id="batOut">100%</b></span>
+          </label>
+        </fieldset>
+
+        <fieldset>
+          <legend>Цена</legend>
+          <div class="two">
+            <label class="lbl">Цена, ₸<input name="price" inputmode="numeric" placeholder="235 000" required></label>
+            <label class="lbl">Старая цена (для акции), ₸<input name="oldPrice" inputmode="numeric" placeholder="необязательно"></label>
+          </div>
+        </fieldset>
+
+        <fieldset id="defSet">
+          <legend>Дефекты</legend>
+          <div class="seg seg--sm" id="defSeg">
+            <button type="button" data-v="0">✓ Дефектов нет</button>
+            <button type="button" data-v="1">⚠ Есть дефекты</button>
+          </div>
+          <div id="defBox" hidden>
+            <div class="checks" id="defChecks"></div>
+            <label class="lbl">Подробнее о дефектах<textarea name="defectsNote" rows="2" placeholder="Например: небольшая царапина на рамке у кнопки громкости"></textarea></label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Фото и видео</legend>
+          <div class="drop" id="drop">
+            <input type="file" id="photoIn" accept="image/*" multiple hidden>
+            <input type="file" id="videoIn" accept="video/*" hidden>
+            <div class="tiles" id="tiles"></div>
+            <div class="drop__btns">
+              <button type="button" class="btn btn--glass btn--sm" id="addPhotos">＋ Фото</button>
+              <button type="button" class="btn btn--glass btn--sm" id="addVideo">＋ Видео</button>
+            </div>
+            <p class="muted small">Первое фото — обложка. Можно перетащить файлы сюда. Видео — одно, до 80 МБ.</p>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Описание</legend>
+          <label class="lbl">Текст объявления<textarea name="desc" rows="4" placeholder="Состояние, что проверено, особенности"></textarea></label>
+          <div class="lbl">Комплект<div class="checks" id="kitChecks"></div></div>
+          <div class="two">
+            <label class="lbl">Гарантия<select name="warranty" id="warSel"></select></label>
+            <label class="lbl">Статус<select name="status" id="stSel"></select></label>
+          </div>
+          <label class="check"><input type="checkbox" name="featured"><span>Показывать первым в каталоге</span></label>
+        </fieldset>
+      </div>
+
+      <aside class="preview">
+        <p class="muted small">Так карточка будет выглядеть на сайте</p>
+        <div id="pv"></div>
+      </aside>
+    </div>
+    <footer class="sheet__foot">
+      <button type="button" class="btn btn--glass" data-x>Отмена</button>
+      <button type="submit" class="btn btn--light" id="saveItem">Сохранить</button>
+    </footer>
+  </form>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script src="common.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>
